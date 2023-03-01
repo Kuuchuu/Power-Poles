@@ -1,0 +1,15 @@
+
+Burning temperatures reference, in deg.C:
+
+- Wood: 600 to 900, definitely not more than 1000.
+- Chemfuel (based on gasoline): ~1000.
+- Electrical (arc furnace): up to 2000 in practical use.
+
+Melting points for common metals, rounded for simplification:
+- Gold: 1000 deg.
+- Steel (carbon steel): 1400 deg.
+- Silver: 950 deg.
+- Copper: 1100 deg.
+- Tin: 231 deg.
+- Uranium: 1100 deg.
+- Plasteel (based on titanium): 1600 deg.

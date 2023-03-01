@@ -1,0 +1,128 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="Coilgun Fire_data" version="1.3.0" audacityversion="2.4.2" sel0="0.0000000000" sel1="0.0000000000" vpos="448" h="0.0000000000" zoom="63.7605518020" rate="48000.0" snapto="off" selectionformat="hh:mm:ss + milliseconds" frequencyformat="Hz" bandwidthformat="octaves">
+	<tags>
+		<tag name="Band" value=""/>
+		<tag name="Composer" value=""/>
+	</tags>
+	<wavetrack name="423118__ogsoundfx__guns-explosions-album-railgun-shot-6" isSelected="1" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="48000" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="4.01502083" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="214159">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808902.au" len="214159" min="-1.352602" max="1.499595" rms="0.239577"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="423118__ogsoundfx__guns-explosions-album-railgun-shot-6" isSelected="1" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="48000" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="4.01502083" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="214159">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808652.au" len="214159" min="-1.206168" max="1.323179" rms="0.239983"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="155790__deleted-user-1941307__shipboard-railgun" isSelected="0" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="48000" gain="0.562341" pan="0.0" colorindex="0">
+		<waveclip offset="4.01502083" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="96001">
+				<waveblock start="0">
+					<simpleblockfile filename="e080882c.au" len="96001" min="-1.159766" max="1.078517" rms="0.277703"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="155790__deleted-user-1941307__shipboard-railgun" isSelected="0" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="48000" gain="0.562341" pan="0.0" colorindex="0">
+		<waveclip offset="4.01502083" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="96001">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808ec9.au" len="96001" min="-1.198907" max="1.075446" rms="0.286839"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="394672__svoxx__rail1a" isSelected="0" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="48000" gain="3.162278" pan="0.0" colorindex="0">
+		<waveclip offset="4.01502083" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="83479">
+				<waveblock start="0">
+					<simpleblockfile filename="e08087fd.au" len="83479" min="-0.418182" max="0.394958" rms="0.100811"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="394672__svoxx__rail1a" isSelected="0" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="48000" gain="3.162278" pan="0.0" colorindex="0">
+		<waveclip offset="4.01502083" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="83479">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808ad4.au" len="83479" min="-0.437164" max="0.417664" rms="0.100775"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="171574__timbre__less-artifacts-remix-2-of-121864-timbre-before-after-remix-3-of-97151-franq-flash-charging" isSelected="0" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="44100" gain="0.070795" pan="0.0" colorindex="0">
+		<waveclip offset="2.60349206" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="77135">
+				<waveblock start="0">
+					<simpleblockfile filename="e08082fc.au" len="77135" min="-0.378554" max="0.326211" rms="0.063487"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="171574__timbre__less-artifacts-remix-2-of-121864-timbre-before-after-remix-3-of-97151-franq-flash-charging" isSelected="0" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="44100" gain="0.070795" pan="0.0" colorindex="0">
+		<waveclip offset="2.60349206" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="77135">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808910.au" len="77135" min="-0.377159" max="0.322429" rms="0.060021"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="257229__javierzumer__charging-power" isSelected="0" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="48000" gain="0.891251" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="213047">
+				<waveblock start="0">
+					<simpleblockfile filename="e08085e7.au" len="213047" min="-0.565493" max="0.645581" rms="0.150699"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="257229__javierzumer__charging-power" isSelected="0" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="48000" gain="0.891251" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="213047">
+				<waveblock start="0">
+					<simpleblockfile filename="e080830e.au" len="213047" min="-0.570057" max="0.642379" rms="0.153764"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="Audio Track" isSelected="0" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="48000" gain="0.446684" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="217564">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808d8d.au" len="217564" min="-0.542411" max="0.532244" rms="0.138671"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="Audio Track" isSelected="0" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="48000" gain="0.446684" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="217564">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808e77.au" len="217564" min="-0.542411" max="0.532244" rms="0.138671"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+</project>
