@@ -123,7 +123,7 @@ namespace RimForge.Buildings
                     defaultLabel = "RF.LDP.LinkLabel".Translate(Name),
                     action = (t) =>
                     {
-#if V13
+#if !V12
                         Thing thing = t.Thing;
 #else
                         Thing thing = t;
@@ -166,7 +166,7 @@ namespace RimForge.Buildings
                         defaultLabel = "RF.LDP.UnLinkLabel".Translate(Name),
                         action = (t) =>
                         {
-#if V13
+#if !V12
                             Thing thing = t.Thing;
 #else
                             Thing thing = t;
