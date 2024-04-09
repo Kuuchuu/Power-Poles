@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using Verse;
+#if V15_OR_GREATER
+using LudeonTK;
+#endif
 
 namespace RimForge
 {

@@ -1,5 +1,4 @@
-﻿using RimForge.Effects;
-using RimWorld;
+﻿using RimWorld;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -56,7 +55,7 @@ namespace RimForge.Buildings
             for (int i = 0; i < pc; i++)
             {
                 float t = (float)i / (pc - 1);
-                Vector2 bezier = Bezier.Evaluate(t, a, b, c, d);
+                Vector2 bezier = Effects.Bezier.Evaluate(t, a, b, c, d);
                 points.Add(bezier);
             }
 
@@ -221,10 +220,24 @@ namespace RimForge.Buildings
             cableMatCached = GetCableMaterial(GetCableColor());
         }
 
+#if V15_OR_GREATER
+        public override void DynamicDrawPhaseAt(DrawPhase phase, Vector3 drawLoc, bool flip = false)
+        {
+            base.DynamicDrawPhaseAt(phase, drawLoc, flip);
+
+            if (phase == DrawPhase.Draw)
+                DrawInt();
+        }
+#else
         public override void Draw()
         {
             base.Draw();
+            DrawInt();
+        }
+#endif
 
+        private void DrawInt()
+        {
             if (connectionToPoints == null)
                 return;
 

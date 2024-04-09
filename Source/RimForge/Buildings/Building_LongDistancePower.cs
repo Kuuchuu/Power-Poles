@@ -5,6 +5,9 @@ using System.Diagnostics;
 using UnityEngine;
 using Verse;
 using Debug = UnityEngine.Debug;
+#if V15_OR_GREATER
+using LudeonTK;
+#endif
 
 namespace RimForge.Buildings
 {
@@ -231,11 +234,30 @@ namespace RimForge.Buildings
                 },
                 icon = Content.LinkIcon,
                 defaultIconColor = blue,
+#if V15_OR_GREATER
+                Disabled = !multiSelected,
+#else
                 disabled = !multiSelected,
+#endif
                 disabledReason = "RF.LDP.AutoLinkDisabled".Translate(Name)
             };
         }
 
+#if V15_OR_GREATER
+        public override void DynamicDrawPhaseAt(DrawPhase phase, Vector3 drawLoc, bool flip = false)
+        {
+            base.DynamicDrawPhaseAt(phase, drawLoc, flip);
+
+            if (phase != DrawPhase.Draw)
+                return;
+
+            if (CanHaveConnectionsUnderRoof)
+                return;
+
+            if (isUnderRoofCache)
+                this.DrawCustomOverlay();
+        }
+#else
         public override void Draw()
         {
             base.Draw();
@@ -246,6 +268,7 @@ namespace RimForge.Buildings
             if(isUnderRoofCache)
                 this.DrawCustomOverlay();
         }
+#endif
 
         public override void TickRare()
         {
@@ -556,13 +579,26 @@ namespace RimForge.Buildings
             if (md == null)
                 return;
 
-            md.MapMeshDirty(this.Position, MapMeshFlag.PowerGrid, true, false);
+#if V15_OR_GREATER
+            md.MapMeshDirty(Position, MapMeshFlagDefOf.PowerGrid, true, false);
             foreach (var conn in GetAllLinked(false))
             {
                 if (conn == null)
                     continue;
+
+                md.SectionAt(conn.Position).dirtyFlags |= MapMeshFlagDefOf.PowerGrid;
+            }
+#else
+            md.MapMeshDirty(Position, MapMeshFlag.PowerGrid, true, false);
+            foreach (var conn in GetAllLinked(false))
+            {
+                if (conn == null)
+                    continue;
+
                 md.SectionAt(conn.Position).dirtyFlags |= MapMeshFlag.PowerGrid;
             }
+#endif
+
 
             Map.powerNetManager.Notfiy_TransmitterTransmitsPowerNowChanged(Power);
         }
@@ -571,7 +607,7 @@ namespace RimForge.Buildings
         /// Called whenever an existing link is removed.
         /// This connection may have been the 'owner' of the link. This is indicated by the <paramref name="isOwner"/> parameter.
         /// </summary>
-        /// <param name="to">The connection that has been un-linked. Will not be null, but may be destroyed.</param>
+        /// <param name="from">The connection that has been un-linked. Will not be null, but may be destroyed.</param>
         /// <param name="isOwner">Was this connection the owner of the link?</param>
         protected virtual void UponLinkRemoved(Building_LongDistancePower from, bool isOwner)
         {
@@ -581,7 +617,16 @@ namespace RimForge.Buildings
             var md = Map?.mapDrawer;
             if (md == null)
                 return;
+#if V15_OR_GREATER
 
+            md.MapMeshDirty(this.Position, MapMeshFlagDefOf.PowerGrid, true, false);
+            foreach(var conn in GetAllLinked(false))
+            {
+                if (conn == null)
+                    continue;
+                md.SectionAt(conn.Position).dirtyFlags |= MapMeshFlagDefOf.PowerGrid;
+            }
+#else
             md.MapMeshDirty(this.Position, MapMeshFlag.PowerGrid, true, false);
             foreach(var conn in GetAllLinked(false))
             {
@@ -589,6 +634,7 @@ namespace RimForge.Buildings
                     continue;
                 md.SectionAt(conn.Position).dirtyFlags |= MapMeshFlag.PowerGrid;
             }
+#endif
 
             Map.powerNetManager.Notfiy_TransmitterTransmitsPowerNowChanged(Power);
         }
