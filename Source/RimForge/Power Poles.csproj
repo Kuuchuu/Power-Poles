@@ -50,7 +50,7 @@
 
   <!-- Rimworld assembly refs for latest 1.4 -->
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='v1.4|AnyCPU'">
-    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3641" />
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3901" />
   </ItemGroup>
 
   <!-- Output -->

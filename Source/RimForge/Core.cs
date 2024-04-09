@@ -5,6 +5,7 @@ using Verse;
 
 namespace RimForge
 {
+    [HotSwapAll]
     public class Core : Mod
     {
         public static Core Instance { get; private set; }
@@ -59,4 +60,7 @@ namespace RimForge
         public override string SettingsCategory() => "Power Poles";
         
     }
+
+    [AttributeUsage(AttributeTargets.Class)]
+    internal class HotSwapAllAttribute : Attribute {  }
 }

@@ -36,10 +36,12 @@ namespace RimForge.Buildings
         public override float MaxLinkDistance => Settings.CableMaxDistance;
 
         private readonly Dictionary<Building_LongDistanceCabled, List<Vector2>> connectionToPoints = new Dictionary<Building_LongDistanceCabled, List<Vector2>>();
+        private readonly object key = new object();
         private Material cableMatCached;
+        private float slack = 1f;
         private int colorInt;
 
-        public virtual List<Vector2> GeneratePoints(Building_LongDistanceCabled poleA, Building_LongDistanceCabled poleB, int? pointCount = null, Vector2? p1 = null, Vector2? p2 = null, List<Vector2> points = null)
+        public static List<Vector2> GeneratePoints(Building_LongDistanceCabled poleA, Building_LongDistanceCabled poleB, Vector2 a, Vector2 b, Vector2 c, Vector2 d, List<Vector2> points = null)
         {
             if (poleA.DestroyedOrNull() || poleB.DestroyedOrNull())
                 return points;
@@ -47,35 +49,21 @@ namespace RimForge.Buildings
             points ??= new List<Vector2>(128);
             points.Clear();
 
-            Vector2 start = poleA.GetFlatConnectionPoint();
-            Vector2 end = poleB.GetFlatConnectionPoint();
-
-            if (p1 == null)
-            {
-                Vector2 midA = Vector2.Lerp(start, end, 0.3f);
-                p1 = midA + new Vector2(0, -1.2f);
-            }
-            if (p2 == null)
-            {
-                Vector2 midB = Vector2.Lerp(start, end, 0.7f);
-                p2 = midB + new Vector2(0, -1.2f);
-            }
-
-            int pc = pointCount ?? GetCablePointCount(start, end);
+            int pc = GetCablePointCount(a, d);
             if (pc < 3)
                 pc = 3;
             
             for (int i = 0; i < pc; i++)
             {
                 float t = (float)i / (pc - 1);
-                Vector2 bezier = Bezier.Evaluate(t, start, p1.Value, p2.Value, end);
+                Vector2 bezier = Bezier.Evaluate(t, a, b, c, d);
                 points.Add(bezier);
             }
 
             return points;
         }
 
-        public void GeneratePointsAsync(Building_LongDistanceCabled dom, Building_LongDistanceCabled sub, int? pointCount = null, Vector2? p1 = null, Vector2? p2 = null)
+        public void GeneratePointsAsync(Building_LongDistanceCabled dom, Building_LongDistanceCabled sub)
         {
             if (dom.DestroyedOrNull() || sub.DestroyedOrNull())
                 return;
@@ -85,14 +73,34 @@ namespace RimForge.Buildings
             else
                 dom.connectionToPoints.Add(sub, null);
 
-            Task.Run(() =>
+            GetSagAndDistanceToMidpoint(out float sag, out float pctToOtherSide);
+
+			Vector2 start = dom.GetFlatConnectionPoint();
+			Vector2 end = sub.GetFlatConnectionPoint();
+
+		    Vector2 midA = Vector2.Lerp(start, end, pctToOtherSide);
+		    Vector2 p1 = midA + new Vector2(0, sag);
+
+		    Vector2 midB = Vector2.Lerp(start, end, 1f - pctToOtherSide);
+		    Vector2 p2 = midB + new Vector2(0, sag);
+
+			lock (key)
             {
-                var list = GeneratePoints(dom, sub, pointCount, p1, p2, null);
-                dom.connectionToPoints[sub] = list;
-            });
+				Task.Run(() =>
+				{
+					var list = GeneratePoints(dom, sub, start, p1, p2, end, null);
+					dom.connectionToPoints[sub] = list;
+				});
+			}
         }
 
-        public virtual int GetCablePointCount(Vector2 a, Vector2 b)
+        private void GetSagAndDistanceToMidpoint(out float sag, out float pctToOtherSide)
+        {
+            sag = slack * -1.2f;
+            pctToOtherSide = slack * 0.23f;
+        }
+        
+        public static int GetCablePointCount(Vector2 a, Vector2 b)
         {
             return Mathf.Clamp(Mathf.RoundToInt((a - b).magnitude * Settings.CableSegmentsPerCell), 10, 100);
         }
@@ -125,30 +133,31 @@ namespace RimForge.Buildings
             {
                 yield return gizmo;
             }
-            IEnumerator<Gizmo> enumerator = null;
+
             yield return new Command_Action
             {
                 defaultLabel = "Change cable color",
                 defaultDesc = "Changes the cable color.",
                 action = delegate ()
                 {
-                    int[] objects = new int[]
-                    {
-                        0,
+                    int[] objects =
+					[
+						0,
                         1,
                         2,
                         3
-                    };
-                    string[] optionNames = new string[]
-                    {
-                        "Copper",
+                    ];
+					string[] optionNames =
+					[
+						"Copper",
                         "Tin",
                         "Gold",
                         "Rubber"
-                    };
-                    FloatMenuUtility.MakeMenu<int>(objects, (int i) => optionNames[i], (int i) => delegate ()
+                    ];
+
+                    FloatMenuUtility.MakeMenu(objects, (int i) => optionNames[i], (int i) => delegate ()
                     {
-                        if (this.colorInt != i)
+                        if (colorInt != i)
                         {
                             List<object> selectedObjectsListForReading = Find.Selector.SelectedObjectsListForReading;
                             if (selectedObjectsListForReading != null)
@@ -168,6 +177,43 @@ namespace RimForge.Buildings
                 },
                 icon = Content.SwapIcon
             };
+
+            yield return new Command_Action
+            {
+				defaultLabel = $"Change cable slack",
+				defaultDesc = "Allows adjusting how far down the cable sags.\nThis is a visual change only.",
+				action = delegate ()
+				{
+                    float[] values = new float[11];
+
+                    for (int i = 0; i < 11; i++)
+                    {
+                        values[i] = (float)i / 5;
+                    }
+
+					FloatMenuUtility.MakeMenu(values, p => $"<color={(p == slack ? "green" : "white")}>{p:P0}</color>", pct => () =>
+					{
+                        if (slack == pct)
+                            return;
+
+					    List<object> selectedObjectsListForReading = Find.Selector.SelectedObjectsListForReading;
+                        if (selectedObjectsListForReading != null)
+                        {
+                            foreach (object obj in selectedObjectsListForReading)
+                            {
+                                if (obj is not Building_LongDistanceCabled cbl)
+                                    continue;
+
+								cbl.slack = pct;
+								cbl.RegenerateCables();
+						    }
+                        }
+
+					});
+				},
+				icon = Content.SlackIcon,
+                groupable = true
+			};
         }
 
         public void UpdateCableColor()
@@ -209,6 +255,7 @@ namespace RimForge.Buildings
         {
             base.ExposeData();
             Scribe_Values.Look(ref colorInt, "cableColor", 0);
+            Scribe_Values.Look(ref slack, "slack", 1f);
         }
 
         protected override void PreLinksReset()
@@ -250,5 +297,5 @@ namespace RimForge.Buildings
                     GeneratePointsAsync(this, cabled);
             }
         }
-    }
+	}
 }

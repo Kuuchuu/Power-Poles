@@ -10,6 +10,7 @@ namespace RimForge
     {
         public static readonly Texture2D LinkIcon = ContentFinder<Texture2D>.Get("RF/UI/Link", true);
         public static readonly Texture2D SwapIcon = ContentFinder<Texture2D>.Get("RF/UI/Swap", true);
+        public static readonly Texture2D SlackIcon = ContentFinder<Texture2D>.Get("RF/UI/Slack", true);
 
         public static void DrawCustomOverlay(this Thing drawer)
         {
