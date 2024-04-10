@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
   <packageId>co.uk.epicguru.rimforgepoles</packageId>
-  <name>RimForge - Only Power Poles</name>
+  <name>Power Poles</name>
   <author>Epicguru (James B)</author>
   <supportedVersions>
     <li>1.2</li>
@@ -10,11 +10,8 @@
     <li>1.5</li>
   </supportedVersions>
   <url>https://github.com/Epicguru/RimForge</url>
-  <description>Adds the Power Poles from RimForge, and nothing else.
-Power poles are a way to avoid running cables everywhere, and instead have a more aesthetic power grid.
-
-The poles are part of a larger mod, RimForge. RimForge already includes the poles, so this mod is incompatible with the main RimForge mod.
-  </description>
+  <description>Adds functional, customizable power poles with dynamic hanging cables to Rimworld.
+You can find the poles in the Power tab.</description>
   <modDependencies>
     <li>
       <packageId>brrainz.harmony</packageId>
@@ -26,7 +23,4 @@ The poles are part of a larger mod, RimForge. RimForge already includes the pole
   <loadAfter>
     <li>brrainz.harmony</li>
   </loadAfter>
-  <incompatibleWith>
-	  <li>co.uk.epicguru.rimforge</li>
-  </incompatibleWith>
 </ModMetaData>
