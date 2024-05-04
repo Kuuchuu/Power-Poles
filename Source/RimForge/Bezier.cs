@@ -2,7 +2,7 @@
 
 namespace RimForge.Effects
 {
-    public static class Bezier
+    internal static class Bezier
     {
         public static Vector2 Evaluate(float t, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
         {

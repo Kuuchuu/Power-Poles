@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using RimForge.PolesSettings;
 using System;
 using UnityEngine;
 using Verse;
@@ -6,9 +7,9 @@ using Verse;
 namespace RimForge
 {
     [HotSwapAll]
-    public class Core : Mod
+    public class PolesCore : Mod
     {
-        public static Core Instance { get; private set; }
+        public static PolesCore Instance { get; private set; }
 
         internal static void Log(string msg)
         {
@@ -29,7 +30,7 @@ namespace RimForge
 
         public readonly Harmony HarmonyInstance; 
 
-        public Core(ModContentPack content) : base(content)
+        public PolesCore(ModContentPack content) : base(content)
         {
             Log("Hello, world!");
             Instance = this;
@@ -49,12 +50,12 @@ namespace RimForge
                 Log($"Patched {HarmonyInstance.GetPatchedMethods().EnumerableCount()} methods:\n{string.Join(",\n", HarmonyInstance.GetPatchedMethods())}");
             }
 
-            LongEventHandler.ExecuteWhenFinished(() => GetSettings<Settings>());
+            LongEventHandler.ExecuteWhenFinished(() => GetSettings<PolesModSettings>());
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            Settings.DrawUI(inRect);
+            PolesModSettings.DrawUI(inRect);
         }
 
         public override string SettingsCategory() => "Power Poles";

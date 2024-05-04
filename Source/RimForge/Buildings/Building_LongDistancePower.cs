@@ -5,9 +5,6 @@ using System.Diagnostics;
 using UnityEngine;
 using Verse;
 using Debug = UnityEngine.Debug;
-#if V15_OR_GREATER
-using LudeonTK;
-#endif
 
 namespace RimForge.Buildings
 {
@@ -57,10 +54,10 @@ namespace RimForge.Buildings
         {
             get
             {
-                return _power ??= GetComp<CompPowerTransmitter>();
+                return power ??= GetComp<CompPowerTransmitter>();
             }
         }
-        private CompPowerTransmitter _power;
+        private CompPowerTransmitter power;
 
         protected IReadOnlyCollection<Building_LongDistancePower> OwnedConnectionsSanitized
         {
@@ -126,15 +123,12 @@ namespace RimForge.Buildings
                     defaultLabel = "RF.LDP.LinkLabel".Translate(Name),
                     action = (t) =>
                     {
-#if !V12
                         Thing thing = t.Thing;
-#else
-                        Thing thing = t;
-#endif
+
                         // Try link to this.
                         bool worked = TryAddLink(thing as Building_LongDistancePower);
                         if (!worked)
-                            Core.Warn("Failed to link!");
+                            PolesCore.Warn("Failed to link!");
 
                     },
                     targetingParams = new TargetingParameters()
@@ -150,7 +144,7 @@ namespace RimForge.Buildings
                             return info.Thing is Building_LongDistancePower thing && CanLinkTo(thing);
                         }
                     },
-                    icon = Content.LinkIcon,
+                    icon = PolesContent.LinkIcon,
                     defaultIconColor = green
                 };
             }
@@ -169,15 +163,11 @@ namespace RimForge.Buildings
                         defaultLabel = "RF.LDP.UnLinkLabel".Translate(Name),
                         action = (t) =>
                         {
-#if !V12
                             Thing thing = t.Thing;
-#else
-                            Thing thing = t;
-#endif
                             // Try un-link to this.
                             bool worked = TryRemoveLink(thing as Building_LongDistancePower);
                             if (!worked)
-                                Core.Warn("Failed to un-link!");
+                                PolesCore.Warn("Failed to un-link!");
 
                         },
                         targetingParams = new TargetingParameters()
@@ -193,7 +183,7 @@ namespace RimForge.Buildings
                                 return info.Thing is Building_LongDistancePower thing && IsLinkedTo(thing);
                             }
                         },
-                        icon = Content.LinkIcon,
+                        icon = PolesContent.LinkIcon,
                         defaultIconColor = red,
                         FloatMenuOptionsGenerator = GenOptions
                     };
@@ -204,7 +194,7 @@ namespace RimForge.Buildings
                     {
                         defaultLabel = "RF.LDP.UnLinkAllLabel".Translate(Name),
                         action = DisconnectAll,
-                        icon = Content.LinkIcon,
+                        icon = PolesContent.LinkIcon,
                         defaultIconColor = red
 
                     };
@@ -232,18 +222,13 @@ namespace RimForge.Buildings
 
                     AutoConnectAll(powers);
                 },
-                icon = Content.LinkIcon,
+                icon = PolesContent.LinkIcon,
                 defaultIconColor = blue,
-#if V15_OR_GREATER
                 Disabled = !multiSelected,
-#else
-                disabled = !multiSelected,
-#endif
                 disabledReason = "RF.LDP.AutoLinkDisabled".Translate(Name)
             };
         }
 
-#if V15_OR_GREATER
         public override void DynamicDrawPhaseAt(DrawPhase phase, Vector3 drawLoc, bool flip = false)
         {
             base.DynamicDrawPhaseAt(phase, drawLoc, flip);
@@ -257,18 +242,6 @@ namespace RimForge.Buildings
             if (isUnderRoofCache)
                 this.DrawCustomOverlay();
         }
-#else
-        public override void Draw()
-        {
-            base.Draw();
-
-            if (CanHaveConnectionsUnderRoof)
-                return;
-
-            if(isUnderRoofCache)
-                this.DrawCustomOverlay();
-        }
-#endif
 
         public override void TickRare()
         {
@@ -315,7 +288,7 @@ namespace RimForge.Buildings
 
         public virtual void AutoConnectAll(List<Building_LongDistancePower> powers)
         {
-            Core.Log($"Starting auto-link of {powers.Count} LDP buildings.");
+            PolesCore.Log($"Starting auto-link of {powers.Count} LDP buildings.");
 
             // Clear existing connections.
             foreach (var item in powers)
@@ -390,7 +363,7 @@ namespace RimForge.Buildings
 
                 if(temp.Count == 0)
                 {
-                    Core.Warn($"None of the {grid.Count} grid items can connect to any of the {open.Count} open items, breaking loop.");
+                    PolesCore.Warn($"None of the {grid.Count} grid items can connect to any of the {open.Count} open items, breaking loop.");
                     break;
                 }
 
@@ -408,14 +381,14 @@ namespace RimForge.Buildings
 
                 if (a == null)
                 {
-                    Core.Warn("Failed to find a suitable connection between grid items and open items, breaking loop.");
+                    PolesCore.Warn("Failed to find a suitable connection between grid items and open items, breaking loop.");
                     break;
                 }
 
                 bool worked = a.TryAddLink(b);
                 if (!worked)
                 {
-                    Core.Error("Bad shit: CanLinkTo returned true, but TryAddLink returned false in AutoConnect. Breaking autoconnect loop...");
+                    PolesCore.Error("Bad shit: CanLinkTo returned true, but TryAddLink returned false in AutoConnect. Breaking autoconnect loop...");
                     break;
                 }
                 open.Remove(b);
@@ -427,9 +400,9 @@ namespace RimForge.Buildings
             timer.Stop();
 
             int failed = powers.Count - connected - 1; // There should be n - 1 connections between n poles.
-            Core.Log($"Finished auto-connect of {connected + 1} in {timer.ElapsedMilliseconds} ms.");
+            PolesCore.Log($"Finished auto-connect of {connected + 1} in {timer.ElapsedMilliseconds} ms.");
             if (failed > 0)
-                Core.Warn($"Failed to connect {failed} LDP buildings in auto-connect...");
+                PolesCore.Warn($"Failed to connect {failed} LDP buildings in auto-connect...");
         }
 
         public virtual void DisconnectAll()
@@ -447,7 +420,7 @@ namespace RimForge.Buildings
                 i++;
                 if (i > total + 1)
                 {
-                    Core.Error("Failed to unlink one or more connections in DisconnectAll().");
+                    PolesCore.Error("Failed to unlink one or more connections in DisconnectAll().");
                     break;
                 }
             }
@@ -500,7 +473,7 @@ namespace RimForge.Buildings
         /// <summary>
         /// Attempt to link this connection with another.
         /// Will return true if successful, false otherwise.
-        /// A successful linking with result in the calling of <see cref="UponConnectionAdded(Building_LongDistancePower)"/>
+        /// A successful linking with result in the calling of <see cref="UponLinkAdded"/>
         /// on both this connection and the other.
         /// </summary>
         /// <param name="item">The other connection to link to.</param>
@@ -523,7 +496,7 @@ namespace RimForge.Buildings
         /// <summary>
         /// Attempt to remove a link between this connection and another.
         /// Will return true if successful, false otherwise.
-        /// A successful un-linking with result in the calling of <see cref="UponConnectionRemoved(Building_LongDistancePower)"/>
+        /// A successful un-linking with result in the calling of <see cref="UponLinkRemoved"/>
         /// on both this connection and the other. 
         /// </summary>
         /// <param name="item">The other connection to un-link from.</param>
@@ -579,7 +552,6 @@ namespace RimForge.Buildings
             if (md == null)
                 return;
 
-#if V15_OR_GREATER
             md.MapMeshDirty(Position, MapMeshFlagDefOf.PowerGrid, true, false);
             foreach (var conn in GetAllLinked(false))
             {
@@ -588,16 +560,6 @@ namespace RimForge.Buildings
 
                 md.SectionAt(conn.Position).dirtyFlags |= MapMeshFlagDefOf.PowerGrid;
             }
-#else
-            md.MapMeshDirty(Position, MapMeshFlag.PowerGrid, true, false);
-            foreach (var conn in GetAllLinked(false))
-            {
-                if (conn == null)
-                    continue;
-
-                md.SectionAt(conn.Position).dirtyFlags |= MapMeshFlag.PowerGrid;
-            }
-#endif
 
 
             Map.powerNetManager.Notfiy_TransmitterTransmitsPowerNowChanged(Power);
@@ -617,7 +579,6 @@ namespace RimForge.Buildings
             var md = Map?.mapDrawer;
             if (md == null)
                 return;
-#if V15_OR_GREATER
 
             md.MapMeshDirty(this.Position, MapMeshFlagDefOf.PowerGrid, true, false);
             foreach(var conn in GetAllLinked(false))
@@ -626,15 +587,6 @@ namespace RimForge.Buildings
                     continue;
                 md.SectionAt(conn.Position).dirtyFlags |= MapMeshFlagDefOf.PowerGrid;
             }
-#else
-            md.MapMeshDirty(this.Position, MapMeshFlag.PowerGrid, true, false);
-            foreach(var conn in GetAllLinked(false))
-            {
-                if (conn == null)
-                    continue;
-                md.SectionAt(conn.Position).dirtyFlags |= MapMeshFlag.PowerGrid;
-            }
-#endif
 
             Map.powerNetManager.Notfiy_TransmitterTransmitsPowerNowChanged(Power);
         }

@@ -35,7 +35,7 @@ namespace RimForge.Patches
                 texture2D.name = Path.GetFileNameWithoutExtension(filePath);
                 texture2D.filterMode = FilterMode.Bilinear;
                 texture2D.Apply(true, true);
-                Core.Log($"Texture {file.FullPath} was loaded with no mipmaps, bilinear.");
+                PolesCore.Log($"Texture {file.FullPath} was loaded with no mipmaps, bilinear.");
             }
 
             if (texture2D != null)

@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RimForge.PolesSettings;
 using UnityEngine;
 using Verse;
 
@@ -32,7 +33,7 @@ namespace RimForge.Buildings
                 base.DrawColor = value;
             }
         }
-        public override float MaxLinkDistance => Settings.CableMaxDistance;
+        public override float MaxLinkDistance => PolesModSettings.CableMaxDistance;
 
         private readonly Dictionary<Building_LongDistanceCabled, List<Vector2>> connectionToPoints = new Dictionary<Building_LongDistanceCabled, List<Vector2>>();
         private readonly object key = new object();
@@ -67,10 +68,7 @@ namespace RimForge.Buildings
             if (dom.DestroyedOrNull() || sub.DestroyedOrNull())
                 return;
 
-            if (dom.connectionToPoints.ContainsKey(sub))
-                dom.connectionToPoints[sub] = null;
-            else
-                dom.connectionToPoints.Add(sub, null);
+            dom.connectionToPoints[sub] = null;
 
             GetSagAndDistanceToMidpoint(out float sag, out float pctToOtherSide);
 
@@ -87,7 +85,7 @@ namespace RimForge.Buildings
             {
 				Task.Run(() =>
 				{
-					var list = GeneratePoints(dom, sub, start, p1, p2, end, null);
+					var list = GeneratePoints(dom, sub, start, p1, p2, end);
 					dom.connectionToPoints[sub] = list;
 				});
 			}
@@ -101,7 +99,7 @@ namespace RimForge.Buildings
         
         public static int GetCablePointCount(Vector2 a, Vector2 b)
         {
-            return Mathf.Clamp(Mathf.RoundToInt((a - b).magnitude * Settings.CableSegmentsPerCell), 10, 100);
+            return Mathf.Clamp(Mathf.RoundToInt((a - b).magnitude * PolesModSettings.CableSegmentsPerCell), 10, 100);
         }
 
         /// <summary>
@@ -137,7 +135,7 @@ namespace RimForge.Buildings
             {
                 defaultLabel = "Change cable color",
                 defaultDesc = "Changes the cable color.",
-                action = delegate ()
+                action = () =>
                 {
                     int[] objects =
 					[
@@ -154,7 +152,7 @@ namespace RimForge.Buildings
                         "Rubber"
                     ];
 
-                    FloatMenuUtility.MakeMenu(objects, (int i) => optionNames[i], (int i) => delegate ()
+                    FloatMenuUtility.MakeMenu(objects, i => optionNames[i], i => () =>
                     {
                         if (colorInt != i)
                         {
@@ -163,25 +161,24 @@ namespace RimForge.Buildings
                             {
                                 foreach (object obj in selectedObjectsListForReading)
                                 {
-                                    Building_LongDistanceCabled building_LongDistanceCabled = obj as Building_LongDistanceCabled;
-                                    if (building_LongDistanceCabled != null)
+                                    if (obj is Building_LongDistanceCabled building)
                                     {
-                                        building_LongDistanceCabled.colorInt = i;
-                                        building_LongDistanceCabled.UpdateCableColor();
+                                        building.colorInt = i;
+                                        building.UpdateCableColor();
                                     }
                                 }
                             }
                         }
                     });
                 },
-                icon = Content.SwapIcon
+                icon = PolesContent.SwapIcon
             };
 
             yield return new Command_Action
             {
 				defaultLabel = $"Change cable slack",
 				defaultDesc = "Allows adjusting how far down the cable sags.\nThis is a visual change only.",
-				action = delegate ()
+				action = () =>
 				{
                     float[] values = new float[11];
 
@@ -210,7 +207,7 @@ namespace RimForge.Buildings
 
 					});
 				},
-				icon = Content.SlackIcon,
+				icon = PolesContent.SlackIcon,
                 groupable = true
 			};
         }
@@ -220,7 +217,6 @@ namespace RimForge.Buildings
             cableMatCached = GetCableMaterial(GetCableColor());
         }
 
-#if V15_OR_GREATER
         public override void DynamicDrawPhaseAt(DrawPhase phase, Vector3 drawLoc, bool flip = false)
         {
             base.DynamicDrawPhaseAt(phase, drawLoc, flip);
@@ -228,13 +224,6 @@ namespace RimForge.Buildings
             if (phase == DrawPhase.Draw)
                 DrawInt();
         }
-#else
-        public override void Draw()
-        {
-            base.Draw();
-            DrawInt();
-        }
-#endif
 
         private void DrawInt()
         {
@@ -267,7 +256,7 @@ namespace RimForge.Buildings
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref colorInt, "cableColor", 0);
+            Scribe_Values.Look(ref colorInt, "cableColor");
             Scribe_Values.Look(ref slack, "slack", 1f);
         }
 
@@ -300,11 +289,11 @@ namespace RimForge.Buildings
                 connectionToPoints.Remove(cabled);
         }
 
-        public virtual void RegenerateCables()
+        protected virtual void RegenerateCables()
         {
             connectionToPoints.Clear();
 
-            foreach (var conn in base.OwnedConnectionsSanitized)
+            foreach (var conn in OwnedConnectionsSanitized)
             {
                 if (conn is Building_LongDistanceCabled cabled)
                     GeneratePointsAsync(this, cabled);
