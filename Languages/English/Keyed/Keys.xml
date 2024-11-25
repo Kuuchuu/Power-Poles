@@ -214,6 +214,7 @@ This weapon's bullet deflection rate is {0}%.</RF.Comps.DeflectDesc>
 <RFS.CatCables>Power Poles</RFS.CatCables>
 <RFS.CableSegmentsPerCell>Power cable resolution:Changes the resolution of power pole's cables. Increasing means smoother cables, but possibly lower performance.</RFS.CableSegmentsPerCell>
 <RFS.CableMaxDistance>Power cable range:Changes the maximum distance allowed between power poles. This is personal preference, and does not affect performance.</RFS.CableMaxDistance>
+<RFS.CableThickness>Power cable thickness:Changes the thickness of power pole's cables. This is personal preference, and does not affect performance.</RFS.CableThickness>
 
 <RFS.CatCoilgun>Coilgun</RFS.CatCoilgun>
 <RFS.CoilgunBaseDamageMultiplier>Base damage multiplier:A multiplier on the base damage of every shell type.</RFS.CoilgunBaseDamageMultiplier>

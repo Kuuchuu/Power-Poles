@@ -248,7 +248,7 @@ namespace RimForge.Buildings
                     var last = points[i - 1].FlatToWorld(height);
                     var current = points[i].FlatToWorld(height);
 
-                    GenDraw.DrawLineBetween(last, current, cableMatCached);
+                    GenDraw.DrawLineBetween(last, current, cableMatCached, PolesModSettings.CableThickness);
                 }
             }
         }
